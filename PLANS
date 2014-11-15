@@ -1,0 +1,12 @@
+Inputs
+- button for reset
+- button for doubles
+- button for player A scores
+- button for player B scores
+
+Outputs
+- light for doubles mode
+- light for player A is serving
+- light for player B is serving
+- flash when player has won
+- later: scores on the LED display
