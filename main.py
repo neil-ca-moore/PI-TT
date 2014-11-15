@@ -50,6 +50,13 @@ def light_set(pin, on):
 	else:
 		turn_off(pin)
 
+def flash_until(pin_to_flash, pin_to_stop_on):
+	while not pressed(RESET_IN):
+		time.sleep(0.5)
+		turn_on(pin_to_flash)
+		time.sleep(0.5)
+		turn_off(pin_to_flash)
+
 def main():
 	setup_gpio()
 
@@ -57,17 +64,28 @@ def main():
 		game = Game.make_singles_game(random_bool())
 		singles = True
 		while True:
-			if pressed(RESET_IN):
-				if singles:
-					game = Game.make_singles_game(random_bool())
-				else:
-					game = Game.make_doubles_game(random_bool())
-			elif pressed(DOUBLES_IN):
+			if pressed(DOUBLES_IN):
 				singles = not singles
 			elif pressed(A_SCORE_IN):
 				game.scores(game.get_A())
 			elif pressed(B_SCORE_IN):
 				game.scores(game.get_B())
+
+			reset = False
+			if game.has_won(game.get_A()):
+				flash_until(A_SERVES_OUT, RESET_IN)
+				reset = True
+			elif game.has_won(game.get_B()):
+				flash_until(B_SERVES_OUT, RESET_IN)
+				reset = True
+			elif pressed(RESET_IN):
+				reset = True
+
+			if reset:
+				if singles:
+					game = Game.make_singles_game(random_bool())
+				else:
+					game = Game.make_doubles_game(random_bool())
 
 			light_set(DOUBLES_OUT, not singles)
 			light_set(A_SERVES_OUT, game.to_serve(game.get_A()))
