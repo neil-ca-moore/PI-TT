@@ -23,6 +23,16 @@ class Game:
 	def B_to_serve(self):
 		return not self.A_to_serve()
 
+	@classmethod
+	def have_won(cls, candidate_winner_score, candidate_loser_score):		
+		return candidate_winner_score >= cls.POINTS_TO_WIN and candidate_winner_score >= candidate_loser_score + 2
+
+	def A_has_won(self):
+		return Game.have_won(self.playerA.get_score(), self.playerB.get_score())
+
+	def B_has_won(self):
+		return Game.have_won(self.playerB.get_score(), self.playerA.get_score())
+
 	def A_scores(self):
 		self.player_scored(self.playerA)
 
@@ -37,4 +47,3 @@ class Game:
 		total_points = self.total_points_scored()
 		if total_points >= 2 * self.POINTS_TO_WIN - 1 or total_points % self.SERVES_EACH == 0:
 			self.next_player_is_A = not self.next_player_is_A
-
