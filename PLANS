@@ -10,3 +10,7 @@ Outputs
 - light for player B is serving
 - flash when player has won
 - later: scores on the LED display
+
+Links
+- http://www.raspberrypi-spy.co.uk/2012/06/simple-guide-to-the-rpi-gpio-header-and-pins/
+- http://www.raspberrypi.org/learning/quick-reaction-game/
