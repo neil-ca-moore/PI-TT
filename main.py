@@ -15,10 +15,10 @@ B_SERVES_OUT = 24 -- GPIO08
 def setup_gpio:
 	GPIO.setmode(GPIO.BOARD)
 	
-	GPIO.setup(RESET_IN, GPIO.IN)
-	GPIO.setup(DOUBLES_IN, GPIO.IN)
-	GPIO.setup(A_SCORE_IN, GPIO.IN)
-	GPIO.setup(B_SCORE_IN, GPIO.IN)
+	GPIO.setup(RESET_IN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(DOUBLES_IN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(A_SCORE_IN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(B_SCORE_IN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	
 	GPIO.setup(DOUBLES_OUT, GPIO.OUT)
 	GPIO.setup(A_SERVES_OUT, GPIO.OUT)
@@ -28,12 +28,13 @@ def teardown_gpio:
 	GPIO.cleanup()
 
 def pressed(pin):
-	pressed = not GPIO.input(pin)
-	if pressed:
-		# time.sleep(0.2) # debounce - is this needed?
-		return True
-	else:
+	pressed = GPIO.input(pin)
+	if not pressed:
 		return False
+	else:
+		while GPIO.input(pin):
+			time.sleep(0.01)
+		return True
 
 def turn_on(pin):
 	GPIO.output(pin, 1)
