@@ -1,18 +1,19 @@
+import pdb
 import random
 import RPi.GPIO as GPIO
 import time
 import tt
 
-RESET_IN = 19   -- GPIO10
-DOUBLES_IN = 21 -- GPIO09
-A_SCORE_IN = 11 -- GPIO17
-B_SCORE_IN = 12 -- GPIO18
+RESET_IN = 19   # GPIO10
+DOUBLES_IN = 21 # GPIO09
+A_SCORE_IN = 11 # GPIO17
+B_SCORE_IN = 12 # GPIO18
 
-DOUBLES_OUT = 7   -- GPIO04
-A_SERVES_OUT = 23 -- GPIO11
-B_SERVES_OUT = 24 -- GPIO08
+DOUBLES_OUT = 7   # GPIO04
+A_SERVES_OUT = 23 # GPIO11
+B_SERVES_OUT = 24 # GPIO08
 
-def setup_gpio:
+def setup_gpio():
 	GPIO.setmode(GPIO.BOARD)
 	
 	GPIO.setup(RESET_IN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -24,7 +25,7 @@ def setup_gpio:
 	GPIO.setup(A_SERVES_OUT, GPIO.OUT)
 	GPIO.setup(B_SERVES_OUT, GPIO.OUT)
 
-def teardown_gpio:
+def teardown_gpio():
 	GPIO.cleanup()
 
 def pressed(pin):
@@ -62,7 +63,7 @@ def main():
 	setup_gpio()
 
 	try:
-		game = Game.make_singles_game(random_bool())
+		game = tt.Game.make_singles_game(random_bool())
 		singles = True
 		while True:
 			if pressed(DOUBLES_IN):
@@ -74,9 +75,11 @@ def main():
 
 			reset = False
 			if game.has_won(game.get_A()):
+				light_set(B_SERVES_OUT, False)
 				flash_until(A_SERVES_OUT, RESET_IN)
 				reset = True
 			elif game.has_won(game.get_B()):
+				light_set(A_SERVES_OUT, False)
 				flash_until(B_SERVES_OUT, RESET_IN)
 				reset = True
 			elif pressed(RESET_IN):
@@ -84,9 +87,9 @@ def main():
 
 			if reset:
 				if singles:
-					game = Game.make_singles_game(random_bool())
+					game = tt.Game.make_singles_game(random_bool())
 				else:
-					game = Game.make_doubles_game(random_bool())
+					game = tt.Game.make_doubles_game(random_bool())
 
 			light_set(DOUBLES_OUT, not singles)
 			light_set(A_SERVES_OUT, game.to_serve(game.get_A()))
@@ -94,7 +97,8 @@ def main():
 
 			pass
 
-	except:
+	except Exception, err:
+		pdb.set_trace()
 		print "Unexpected error"
 
 	teardown_gpio()
