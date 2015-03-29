@@ -59,6 +59,12 @@ def flash_until(pin_to_flash, pin_to_stop_on):
 		time.sleep(0.5)
 		turn_off(pin_to_flash)
 
+def momentary_blink(pin):
+	turn_off(pin)
+	time.sleep(0.05)
+	turn_on(pin)
+	time.sleep(0.05)
+
 def main():
 	setup_gpio()
 
@@ -69,8 +75,10 @@ def main():
 			if pressed(DOUBLES_IN):
 				singles = not singles
 			elif pressed(A_SCORE_IN):
+				momentary_blink(A_SERVES_OUT)
 				game.scores(game.get_A())
 			elif pressed(B_SCORE_IN):
+				momentary_blink(B_SERVES_OUT)
 				game.scores(game.get_B())
 
 			reset = False
