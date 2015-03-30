@@ -35,6 +35,7 @@ def pressed(pin):
 	else:
 		while GPIO.input(pin):
 			time.sleep(0.01)
+		time.sleep(0.01)
 		return True
 
 def turn_on(pin):
